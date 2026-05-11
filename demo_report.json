@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-09-17T09:05:17.933351",
+  "model_trained": true,
+  "overall_confidence": 0.6147575974464417,
+  "input_shape": [
+    240,
+    240,
+    4
+  ],
+  "classes": {
+    "Enhancing Tumor": {
+      "mean_confidence": 0.7645395398139954,
+      "max_confidence": 0.9945952296257019,
+      "pixels_detected": 56963,
+      "volume_percentage": 98.89409722222223
+    },
+    "Tumor Core": {
+      "mean_confidence": 0.6074573993682861,
+      "max_confidence": 0.9576182961463928,
+      "pixels_detected": 50896,
+      "volume_percentage": 88.36111111111111
+    },
+    "Whole Tumor": {
+      "mean_confidence": 0.4722757339477539,
+      "max_confidence": 0.9254538416862488,
+      "pixels_detected": 16325,
+      "volume_percentage": 28.34201388888889
+    }
+  },
+  "clinical_assessment": "TUMOR DETECTED - Recommend clinical review"
+}

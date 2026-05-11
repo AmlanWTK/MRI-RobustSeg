@@ -1,0 +1,19 @@
+# Research Pipeline Requirements
+# Install via: pip install -r requirements.txt
+
+# Core Deep Learning
+torch
+torchvision
+torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Numerical & Scientific Computing
+numpy
+scipy
+
+# Medical Imaging & Data Processing
+nibabel
+tqdm
+
+# Visualization
+matplotlib
+pillow
