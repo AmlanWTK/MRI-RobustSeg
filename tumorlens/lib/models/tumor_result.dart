@@ -7,6 +7,7 @@ class TumorResult {
   final String clinicalAssessment;
   final String riskLevel;
   final Map<String, dynamic> metrics;
+  final Map<String, String> probImagesB64;
   final DateTime analysisTime;
 
   TumorResult({
@@ -16,6 +17,7 @@ class TumorResult {
     required this.clinicalAssessment,
     required this.riskLevel,
     required this.metrics,
+    required this.probImagesB64,
     required this.analysisTime,
   });
 
@@ -27,6 +29,7 @@ class TumorResult {
       clinicalAssessment: json['clinical_assessment'] ?? 'Assessment not available',
       riskLevel: json['risk_level'] ?? 'Unknown',
       metrics: json['metrics'] ?? {},
+      probImagesB64: Map<String, String>.from(json['prob_images_b64'] ?? {}),
       analysisTime: DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
     );
   }

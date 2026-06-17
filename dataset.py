@@ -5,9 +5,13 @@ from torch.utils.data import Dataset
 import pickle
 
 """
-Data Loading & Preprocessing
-----------------------------
-Handles BraTS 2020 NPZ files and apply augmentations/degradations.
+IEEE Publication Codebase: Data Loading and Preprocessing Module
+Target Conference: NETCRYPT 2026
+
+Description:
+    Handles loading of preprocessed BraTS 2020 .npz files.
+    Provides the BrainTumorTorchDataset class and split-loading utilities.
+    Designed to integrate with the Hybrid Degradation Augmentation pipeline.
 """
 
 class BrainTumorTorchDataset(Dataset):

@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import '../models/tumor_result.dart';
 
 class AIService extends ChangeNotifier {
-  static const String baseUrl = 'http://localhost:5000/api';  // Change to your server IP
+  static const String baseUrl = 'http://10.45.111.235:5000/api';  // Using host IP for physical device testing
 
   bool _isAnalyzing = false;
   String _analysisProgress = '';
@@ -17,12 +17,16 @@ class AIService extends ChangeNotifier {
   String get analysisProgress => _analysisProgress;
   TumorResult? get lastResult => _lastResult;
 
+
+
+
   Future<TumorResult> analyzeMRI(List<Uint8List> mriImages) async {
     _isAnalyzing = true;
     _analysisProgress = 'Uploading images...';
     notifyListeners();
 
     try {
+      print("🌐 Sending analysis request to: $baseUrl/analyze");
       // Create multipart request
       var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/analyze'));
 
@@ -44,9 +48,11 @@ class AIService extends ChangeNotifier {
       notifyListeners();
 
       // Send request
+      print("⏳ Waiting for backend response...");
       var response = await request.send();
 
       if (response.statusCode == 200) {
+        print("✅ Backend response received successfully (200 OK)");
         _analysisProgress = 'Generating results...';
         notifyListeners();
 
@@ -60,15 +66,17 @@ class AIService extends ChangeNotifier {
 
         return _lastResult!;
       } else {
+        print("❌ Backend returned status code: ${response.statusCode}");
         throw Exception('Analysis failed: ${response.statusCode}');
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print("❌ EXCEPTION IN ANALYZEMRI: $e");
+      print("Stacktrace: $stack");
       _isAnalyzing = false;
       _analysisProgress = '';
       notifyListeners();
       throw Exception('Error during analysis: $e');
-    }
-  }
+  }}
 
   // Simulate analysis for testing without backend
   Future<TumorResult> simulateAnalysis() async {

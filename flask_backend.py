@@ -22,7 +22,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for Flutter web
 
 # Initialize the AI system
-ai_system = BrainTumorSegmentationSystem('unetplusplus_brain_tumor.pth')
+ai_system = BrainTumorSegmentationSystem('phd_best_checkpoint.pth')
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -79,6 +79,9 @@ def health_check():
 @app.route('/api/analyze', methods=['POST'])
 def analyze_mri():
     '''Main analysis endpoint for Flutter app'''
+    print("\n\n" + "="*50)
+    print(f"🚀 INCOMING REQUEST RECEIVED at {datetime.now().strftime('%H:%M:%S')}!")
+    print("="*50 + "\n")
     try:
         # Check if files were uploaded
         if not request.files:

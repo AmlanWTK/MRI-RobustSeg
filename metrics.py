@@ -3,10 +3,14 @@ import numpy as np
 from scipy.spatial.distance import directed_hausdorff
 
 """
-Research Metrics Suite
-----------------------
-Standardized evaluation metrics for Brain Tumor Segmentation.
-Includes: Dice Coefficient, Hausdorff Distance (HD95), and IoU.
+IEEE Publication Codebase: Quantitative Evaluation Metrics
+Target Conference: NETCRYPT 2026
+
+Description:
+    Standardized evaluation metrics for brain tumor segmentation benchmarking.
+    Implements: Dice Similarity Coefficient (DSC), Intersection over Union (IoU),
+    and 95th Percentile Hausdorff Distance (HD95).
+    All metrics follow the BraTS 2020 official evaluation protocol.
 """
 
 def dice_coefficient(pred, target, smooth=1e-5):

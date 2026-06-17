@@ -4,11 +4,24 @@ import random
 from scipy.ndimage import gaussian_filter
 
 """
-Q1-RESEARCH GRADE: MRI Hybrid Degradation Pipeline
---------------------------------------------------
-This module implements physics-based MRI artifact simulations.
-Used for state-of-the-art robustness evaluation in medical imaging research.
-Reference: "Physics-informed data augmentation for MRI" (Standard Q1 Methodology).
+IEEE Publication Codebase: Physics-Based MRI Augmentation Module
+Target Conference: NETCRYPT 2026
+
+Description:
+    Implements the Hybrid Degradation Augmentation (HDA) pipeline used to train
+    the Proposed Framework. All artifacts simulate physically realistic MRI
+    acquisition imperfections to improve model robustness and generalization.
+
+    Implemented Artifacts:
+        - MRI Ghosting:   K-space echo artifact simulation.
+        - Gibbs Ringing:  K-space truncation artifact simulation.
+        - Rician Noise:   Correct noise model for MRI magnitude images.
+        - Bias Field:     Low-frequency intensity inhomogeneity.
+        - Motion Blur:    Directional spatial blur from patient motion.
+        - Downsampling:   Low-resolution acquisition simulation.
+
+    Reference: Inspired by TorchIO (Pérez-García et al., 2021) and
+    standard clinical MRI physics literature.
 """
 
 class Q1HybridDegradation:

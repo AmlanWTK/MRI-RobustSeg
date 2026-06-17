@@ -3,10 +3,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 """
-Research Model Repository
--------------------------
-This file contains the architectures used for the Brain Tumor Segmentation study.
-Primary Model: U-Net++ (Nested U-Net)
+IEEE Publication Codebase: Model Architecture Definitions
+Target Conference: NETCRYPT 2026
+
+Description:
+    Defines the segmentation architectures used in the ablation study.
+    Primary model: U-Net++ with nested skip connections.
+    Reference: Zhou et al., "UNet++: A Nested U-Net Architecture for
+    Medical Image Segmentation," MICCAI 2018.
 """
 
 class ConvBlock(nn.Module):

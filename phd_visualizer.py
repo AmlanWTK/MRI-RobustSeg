@@ -7,12 +7,12 @@ import torch.nn as nn
 class AttentionGate(nn.Module):
     def __init__(self, f_g, f_l, f_int):
         super().__init__()
-        self.W_g = nn.Sequential(nn.Conv2d(f_g, f_int, 1), nn.BatchNorm2d(f_int))
-        self.W_l = nn.Sequential(nn.Conv2d(f_l, f_int, 1), nn.BatchNorm2d(f_int))
+        self.Wg = nn.Sequential(nn.Conv2d(f_g, f_int, 1), nn.BatchNorm2d(f_int))
+        self.Wl = nn.Sequential(nn.Conv2d(f_l, f_int, 1), nn.BatchNorm2d(f_int))
         self.psi = nn.Sequential(nn.Conv2d(f_int, 1, 1), nn.BatchNorm2d(1), nn.Sigmoid())
         self.relu = nn.ReLU(inplace=True)
     def forward(self, g, x):
-        return x * self.psi(self.relu(self.W_g(g) + self.W_l(x)))
+        return x * self.psi(self.relu(self.Wg(g) + self.Wl(x)))
 
 class ConvBlock(nn.Module):
     def __init__(self, in_ch, out_ch):
@@ -53,8 +53,18 @@ def generate_clinical_figure(patient_path, checkpoint_path):
     # 1. Load Model
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = AttentionUNetPlusPlus().to(device)
+    
+    # Load and dynamically fix state dict keys to prevent PyTorch crashes
     state = torch.load(checkpoint_path, map_location=device)
-    model.load_state_dict(state['model_state_dict'])
+    state_dict = state['model_state_dict'] if 'model_state_dict' in state else state
+    
+    new_state_dict = {}
+    for k, v in state_dict.items():
+        k = k.replace('.W_g.', '.Wg.')
+        k = k.replace('.W_l.', '.Wl.')
+        new_state_dict[k] = v
+        
+    model.load_state_dict(new_state_dict)
     model.eval()
 
     # 2. Load MRI Modalities
@@ -117,14 +127,15 @@ def generate_clinical_figure(patient_path, checkpoint_path):
     plt.subplot(1, 4, 4)
     plt.imshow(data['flair'][:,:,best_slice], cmap='gray')
     plt.imshow(pred_wt, alpha=0.4, cmap='Greens')
-    plt.title(f"D: Attention UNet++ (Our Result)", fontsize=15, color='green'); plt.axis('off')
+    plt.title(f"D: Proposed Framework", fontsize=15, color='green'); plt.axis('off')
 
     plt.tight_layout()
-    plt.savefig("phd_paper_figure_1.png", dpi=300)
-    print("✅ Figure saved as 'phd_paper_figure_1.png'")
-    plt.show()
+    plt.savefig("/kaggle/working/Fig1_Segmentation_Overlay.png", dpi=300)
+    print("✅ Figure saved as '/kaggle/working/Fig1_Segmentation_Overlay.png'")
+    # plt.show() # Commented out for automated execution
 
 if __name__ == "__main__":
-    PATIENT_PATH = r"D:\Downloads\BrainTumorDataSet\BraTS2020_TrainingData\MICCAI_BraTS2020_TrainingData\BraTS20_Training_001"
-    CHECKPOINT = "phd_best_checkpoint (3).pth"
+    # --- Edit these paths based on your Kaggle input data ---
+    PATIENT_PATH = "/kaggle/input/datasets/awsaf49/brats20-dataset-training-validation/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData/BraTS20_Training_001"
+    CHECKPOINT = "/kaggle/input/datasets/amlan21s/latest/phd_best_checkpoint.pth"
     generate_clinical_figure(PATIENT_PATH, CHECKPOINT)

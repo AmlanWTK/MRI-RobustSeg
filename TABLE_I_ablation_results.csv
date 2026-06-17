@@ -1,0 +1,5 @@
+Configuration,dice_WT,hd95_WT,dice_TC,hd95_TC,dice_ET,hd95_ET
+Standard U-Net,0.8577,39.5915,0.7632,48.3774,0.722,47.6647
+U-Net++ (Nested),0.8688,33.7494,0.7696,33.4036,0.7272,37.813
+Att-UNet++ (w/o Augmentation),0.8681,38.8511,0.7533,50.2988,0.7115,50.9105
+Proposed Framework (Att-UNet++ + HDA),0.8783,25.2745,0.7898,10.3797,0.7356,27.609

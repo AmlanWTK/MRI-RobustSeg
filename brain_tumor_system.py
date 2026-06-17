@@ -71,12 +71,20 @@ class BrainTumorUNet(nn.Module):
 
 class BrainTumorSegmentationSystem:
     def __init__(self, model_path='unetplusplus_brain_tumor.pth'):
-        self.model = BrainTumorUNet(in_ch=4, out_ch=3)
+        from train_segmentation import AttentionUNetPlusPlus
+        self.model = AttentionUNetPlusPlus(in_ch=4, out_ch=3)
         self.model.eval()
 
         # Load trained weights
         try:
-            state_dict = torch.load(model_path, map_location='cpu')
+            checkpoint = torch.load(model_path, map_location='cpu')
+            
+            # If the file is a full checkpoint dict, extract just the model weights
+            if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
+                state_dict = checkpoint['model_state_dict']
+            else:
+                state_dict = checkpoint
+                
             self.model.load_state_dict(state_dict)
             print("✅ Trained model loaded successfully!")
             print(f"📊 Model parameters: {sum(p.numel() for p in self.model.parameters()):,}")

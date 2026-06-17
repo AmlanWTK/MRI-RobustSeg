@@ -4,7 +4,17 @@ try:
 except ImportError:
     torch = None
 
-class Config:
+"""
+IEEE Publication Codebase: Centralized Experiment Configuration
+Target Conference: NETCRYPT 2026
+
+Description:
+    Provides a single configuration object (Config) for all hyperparameters,
+    data paths, and training environment settings.
+    Modify this file to adapt the pipeline to a new environment.
+"""
+
+
     # Data Paths
     DATA_ROOT = r"D:\Downloads\BrainTumorDataSet\preprocessed"
     SPLIT_DIR = r"D:\Downloads\MedDA-Old2Modern-main\MedDA-Old2Modern-main\config" # Path to pickles
