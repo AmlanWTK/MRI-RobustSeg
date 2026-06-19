@@ -110,12 +110,15 @@ class BrainTumorSegmentationSystem:
         if mri_tensor.dim() == 3:
             mri_tensor = mri_tensor.unsqueeze(0)
 
-        # Normalize each channel
+        # Normalize each channel (ignore zero background like training code)
         for i in range(4):
             channel = mri_tensor[:, i]
-            mean_val = channel.mean()
-            std_val = channel.std()
-            mri_tensor[:, i] = (channel - mean_val) / (std_val + 1e-8)
+            mask = channel > 0
+            if mask.any():
+                mean_val = channel[mask].mean()
+                std_val = channel[mask].std()
+                channel[mask] = (channel[mask] - mean_val) / (std_val + 1e-8)
+            mri_tensor[:, i] = channel
 
         return mri_tensor
 

@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import '../models/tumor_result.dart';
 
 class AIService extends ChangeNotifier {
-  static const String baseUrl = 'http://10.45.111.235:5000/api';  // Using host IP for physical device testing
+  static const String baseUrl = 'https://puny-ads-wear.loca.lt/api';  // Using localtunnel for physical device testing
 
   bool _isAnalyzing = false;
   String _analysisProgress = '';
@@ -29,6 +29,7 @@ class AIService extends ChangeNotifier {
       print("🌐 Sending analysis request to: $baseUrl/analyze");
       // Create multipart request
       var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/analyze'));
+      request.headers['Bypass-Tunnel-Reminder'] = 'true';
 
       // Add MRI modality images
       List<String> modalities = ['flair', 't1', 't1ce', 't2'];

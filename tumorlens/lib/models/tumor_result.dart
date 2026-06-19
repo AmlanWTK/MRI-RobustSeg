@@ -29,7 +29,7 @@ class TumorResult {
       clinicalAssessment: json['clinical_assessment'] ?? 'Assessment not available',
       riskLevel: json['risk_level'] ?? 'Unknown',
       metrics: json['metrics'] ?? {},
-      probImagesB64: Map<String, String>.from(json['prob_images_b64'] ?? {}),
+      probImagesB64: Map<String, String>.from(json['probability_images'] ?? {}),
       analysisTime: DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
     );
   }

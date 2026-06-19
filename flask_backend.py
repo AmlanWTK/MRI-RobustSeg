@@ -106,8 +106,11 @@ def analyze_mri():
             prob_map = probabilities[i]
             binary_mask = binary_masks[i]
 
-            # Confidence metrics
-            confidence_scores[class_name] = float(prob_map.mean())
+            # Confidence metrics: calculate only within the detected tumor region, or use max if nothing detected
+            if binary_mask.sum() > 0:
+                confidence_scores[class_name] = float(prob_map[binary_mask > 0].mean())
+            else:
+                confidence_scores[class_name] = float(prob_map.max())
 
             # For demo purposes, create synthetic ground truth for metrics
             # In real application, you'd have actual ground truth masks
@@ -144,11 +147,39 @@ def analyze_mri():
             clinical_assessment = "NO SIGNIFICANT ABNORMALITY DETECTED"
             risk_level = "Minimal"
 
-        # Convert probability maps to base64 for visualization
+        # Convert probability maps to base64 for visualization (Composited over original brain)
         prob_images_b64 = {}
+        
+        # Get the original FLAIR image for the background (it was normalized to 0-1)
+        # mri_data shape is (240, 240, 4). Index 0 is FLAIR.
+        bg_img = (mri_data[:, :, 0] * 255).astype(np.uint8)
+        bg_rgb = cv2.cvtColor(bg_img, cv2.COLOR_GRAY2RGB)
+        
+        # Define colors for each class (BGR format for OpenCV)
+        class_colors = {
+            'Enhancing Tumor': (40, 40, 255),  # Red
+            'Tumor Core': (255, 100, 40),      # Blue
+            'Whole Tumor': (40, 255, 40)       # Green
+        }
+        
         for i, class_name in enumerate(class_names):
-            prob_img = (probabilities[i] * 255).astype(np.uint8)
-            _, buffer = cv2.imencode('.png', prob_img)
+            prob_map = probabilities[i]
+            binary_mask = binary_masks[i]
+            
+            # Create a color overlay for this class
+            color = class_colors.get(class_name, (255, 255, 255))
+            overlay = np.zeros_like(bg_rgb)
+            overlay[binary_mask > 0] = color
+            
+            # Blend the original brain with the colored tumor mask
+            # Where the mask is positive, blend 60% color / 40% brain. Elsewhere, keep 100% brain.
+            alpha = 0.5
+            composite = bg_rgb.copy()
+            mask_indices = binary_mask > 0
+            if mask_indices.any():
+                composite[mask_indices] = cv2.addWeighted(bg_rgb[mask_indices], 1 - alpha, overlay[mask_indices], alpha, 0)
+            
+            _, buffer = cv2.imencode('.png', composite)
             prob_b64 = base64.b64encode(buffer).decode('utf-8')
             prob_images_b64[class_name] = prob_b64
 
